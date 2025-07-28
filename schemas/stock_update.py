@@ -23,7 +23,7 @@ class PurchaseResponse(PurchaseBase):
     vendor_id: int  # Add vendor_id to response
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # -------------------- Selling Schemas --------------------
 
@@ -42,7 +42,7 @@ class SellingResponse(SellingBase):
     vendor_id: int  # Add vendor_id to response
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # from pydantic import BaseModel
 # from datetime import datetime

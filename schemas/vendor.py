@@ -17,7 +17,7 @@ class VendorOut(BaseModel):
     session_id: str | None  # Add session_id, nullable
 
     class Config:
-        orm_mode = True
+        from_attributes = True
         
 # from pydantic import BaseModel
 # from datetime import datetime

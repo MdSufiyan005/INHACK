@@ -410,6 +410,16 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height
 </div>
 </div>
 </div>
+
+<!-- Reminder Popup Modal -->
+<div id="reminderPopup" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:5000; align-items:center; justify-content:center;">
+<div style="background:white; border-radius:1rem; padding:2rem; min-width:300px; max-width:90vw; box-shadow:0 8px 32px rgba(0,0,0,0.2); position:relative; text-align:center;">
+<button onclick="closeReminderPopup()" style="position:absolute; top:1rem; right:1rem; background:none; border:none; font-size:1.5rem; cursor:pointer; color:#888;" title="Close">&times;</button>
+<h3 style="margin-bottom:1rem; color:#333;">Important Note</h3>
+<p style="margin-bottom:1.5rem; color:#666; line-height:1.6;">This is an MVP with a Twilio trial account. Only the test vendor phone number will receive WhatsApp reminders. Other numbers will not receive messages due to Twilio trial limitations.</p>
+<button onclick="closeReminderPopup()" class="btn" style="width:100%;">Understood</button>
+</div>
+</div>
 </div>
 <script>
 const API_BASE = '/api';
@@ -417,6 +427,15 @@ let currentStockTab = 'purchase';
 let currentVendor = null;
 
 function showSection(sectionId) {
+    // Show popup for reminders section
+    if (sectionId === 'reminders') {
+        // Check if popup has been shown in this session
+        if (!sessionStorage.getItem('remindersPopupShown')) {
+            showReminderPopup();
+            return; // Don't switch sections yet
+        }
+    }
+    
     document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
     document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
     document.getElementById(sectionId).classList.add('active');
@@ -435,6 +454,22 @@ function loadSectionData(sectionId) {
         case 'stock': loadStockData('all'); break;
         case 'events': loadEvents(); break;
     }
+}
+
+function showReminderPopup() {
+    document.getElementById('reminderPopup').style.display = 'flex';
+}
+
+function closeReminderPopup() {
+    document.getElementById('reminderPopup').style.display = 'none';
+    // Mark that popup has been shown
+    sessionStorage.setItem('remindersPopupShown', 'true');
+    // Now switch to reminders section
+    document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+    document.getElementById('reminders').classList.add('active');
+    document.querySelector(`.nav-tab[onclick="showSection('reminders')"]`).classList.add('active');
+    loadSectionData('reminders');
 }
 
 async function loadReminders() {
