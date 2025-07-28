@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INHACK - Indian Hawkers</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Color palette: soft yellow-orange gradient */
+        :root {
+            --primary-light: #f6d365;
+            --primary-dark: #fda085;
+            --accent: #f8b500;
+            --text-color: #333;
+            --bg-light: #fffaf0;
+            --border-light: #ffeecf;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            box-sizing: border-box;
+            -webkit-text-size-adjust: 100%;
+            -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: transparent;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        @media (max-width: 900px) {
+            .container { padding: 1rem; }
+        }
+        @media (max-width: 600px) {
+            .container { padding: 0.5rem; }
+        }
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 2.5rem;
+        }
+        .header h1 {
+            font-size: 2.75rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+        }
+        .header p {
+            font-size: 1.25rem;
+            opacity: 0.85;
+        }
+        @media (max-width: 600px) {
+            .header h1 { font-size: 2rem; }
+            .header p { font-size: 1.05rem; }
+        }
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+        .nav-tab {
+            background: rgba(255,255,255,0.15);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            transition: transform 0.3s ease, background 0.3s ease;
+            font-weight: 500;
+            backdrop-filter: blur(8px);
+            font-size: 1.1rem;
+            min-width: 120px;
+            text-align: center;
+        }
+        .nav-tab:hover, .nav-tab.active {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--accent) 100%);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(253,160,133,0.12);
+            transform: translateY(-2px) scale(1.04);
+            border-color: var(--accent);
+        }
+        @media (max-width: 700px) {
+            .nav-tabs {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.5rem;
+            }
+            .nav-tab {
+                width: 100%;
+                max-width: 100%;
+                border-radius: 1.5rem;
+                font-size: 1.08rem;
+                padding: 1rem 0.5rem;
+            }
+        }
+        .content-section {
+            display: none;
+            background: var(--bg-light);
+            border-radius: 1.25rem;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.07);
+            margin-bottom: 2.5rem;
+        }
+        .content-section.active { display: block; }
+        @media (max-width: 700px) {
+            .content-section {
+                padding: 1rem 0.5rem;
+                border-radius: 0.7rem;
+                margin-bottom: 1.2rem;
+            }
+        }
+        .section-title {
+            font-size: 2rem;
+            color: var(--text-color);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            border-bottom: 4px solid var(--accent);
+            padding-bottom: 0.75rem;
+        }
+        @media (max-width: 600px) {
+            .section-title { font-size: 1.3rem; padding-bottom: 0.5rem; }
+        }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #555;
+        }
+        .form-input, .form-select, textarea.form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border-light);
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+        }
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(248,181,0,0.2);
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+        @media (max-width: 700px) {
+            .form-row { grid-template-columns: 1fr; gap: 1rem; }
+        }
+        @media (max-width: 500px) {
+            .form-input, .form-select, textarea.form-input {
+                font-size: 0.98rem;
+                padding: 0.7rem 0.7rem;
+            }
+        }
+        .btn {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+        .btn-secondary { background: var(--accent); }
+        .btn-success { background: #6dc0a8; }
+        .btn-danger { background: #ff7f7f; }
+        .btn-sm { padding: 0.5rem 1rem; font-size: 0.875rem; }
+        @media (max-width: 700px) {
+            .btn, .btn-secondary, .btn-success, .btn-danger {
+                width: 100%;
+                min-width: 0;
+                font-size: 1.05rem;
+                padding: 1rem 0.5rem;
+                margin-bottom: 0.7rem;
+            }
+            .btn-sm { width: auto; min-width: 0; font-size: 0.98rem; padding: 0.7rem 1.2rem; }
+        }
+        .card {
+            background: var(--bg-light);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--accent);
+        }
+        .card-title { font-size: 1.25rem; font-weight: 600; color: var(--text-color); }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .card-actions { display: flex; gap: 0.75rem; }
+        @media (max-width: 700px) {
+            .card { padding: 1rem 0.7rem; border-radius: 0.7rem; margin-bottom: 1rem; }
+            .card-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .feature-card {
+            background: var(--bg-light);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+        .feature-card:hover { transform: translateY(-5px); }
+        .feature-icon { font-size: 3rem; color: var(--accent); margin-bottom: 1rem; }
+        .feature-title { font-size: 1.5rem; font-weight: 600; margin-bottom: 0.75rem; }
+        .feature-desc { color: #666; line-height: 1.6; }
+        @media (max-width: 700px) {
+            .feature-grid { grid-template-columns: 1fr; gap: 1rem; }
+            .feature-card { padding: 1.1rem 0.7rem; border-radius: 0.7rem; }
+            .feature-title { font-size: 1.1rem; }
+            .feature-icon { font-size: 2.2rem; }
+        }
+        .file-upload {
+            border: 2px dashed var(--border-light);
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            background: #fffdf7;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+        .file-upload:hover { border-color: var(--accent); background: #fff8ec; }
+        .upload-icon { font-size: 3rem; color: var(--accent); margin-bottom: 1rem; }
+        @media (max-width: 700px) {
+            .file-upload { padding: 1.1rem 0.7rem; border-radius: 0.7rem; }
+            .upload-icon { font-size: 2.2rem; }
+        }
+        .file-upload input[type="file"] { display: none !important; }
+        .table-container {
+            overflow-x: auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            background: var(--bg-light);
+        }
+        .table.stock-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: var(--bg-light);
+            font-size: 1rem;
+        }
+        .table.stock-table th, .table.stock-table td {
+            padding: 0.85rem 1rem;
+            border-right: 1px solid #f3e7d3;
+            border-bottom: 1px solid #f3e7d3;
+            text-align: left;
+            vertical-align: middle;
+        }
+        .table.stock-table th:last-child, .table.stock-table td:last-child { border-right: none; }
+        .table.stock-table th {
+            background: #fff5e1;
+            font-weight: 700;
+            color: #a86c1d;
+            border-top: 1px solid #f3e7d3;
+        }
+        .table.stock-table tr:nth-child(even) td { background: #fff9f2; }
+        .table.stock-table tr:hover td { background: #fff3e0; }
+        @media (max-width: 700px) {
+            .table-container { box-shadow: none; border-radius: 0; padding: 0; }
+            .table.stock-table, .table.stock-table thead, .table.stock-table tbody, .table.stock-table tr, .table.stock-table th, .table.stock-table td {
+                display: block;
+                width: 100%;
+            }
+            .table.stock-table thead { display: none; }
+            .table.stock-table tr {
+                margin-bottom: 1.5rem;
+                background: #fff;
+                border-radius: 1rem;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+                padding: 1rem 0.5rem;
+            }
+            .table.stock-table td {
+                border: none;
+                background: none;
+                position: relative;
+                padding: 0.7rem 1rem 0.7rem 7.5rem;
+                min-height: 2.5rem;
+                font-size: 1rem;
+            }
+            .table.stock-table td:before {
+                position: absolute;
+                left: 1rem;
+                top: 50%;
+                transform: translateY(-50%);
+                font-weight: 600;
+                color: #a86c1d;
+                font-size: 0.98rem;
+                width: 6.5rem;
+                text-align: left;
+                white-space: nowrap;
+                content: attr(data-label);
+            }
+            .table.stock-table td:last-child { padding-bottom: 1.2rem; }
+            .table.stock-table tr { border-bottom: 2px solid #ffeecf; }
+        }
+        @media (max-width: 500px) {
+            .table.stock-table td { font-size: 0.97rem; padding-left: 6.5rem; }
+            .table.stock-table td:before { font-size: 0.93rem; width: 5.5rem; }
+        }
+        #editModal, #profileModal, #authModal {
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        #editModal > div, #profileModal > div, #authModal > div {
+            min-width: 300px;
+            max-width: 90vw;
+            box-sizing: border-box;
+        }
+        @media (max-width: 600px) {
+            #editModal > div, #profileModal > div, #authModal > div {
+                min-width: 0;
+                width: 98vw;
+                padding: 1rem 0.5rem;
+                border-radius: 0.7rem;
+            }
+        }
+        /* Tooltip styles for username on hover */
+        #usernameTooltip {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-light);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            white-space: nowrap;
+            z-index: 1001;
+            color: var(--text-color);
+            font-size: 0.9rem;
+            transition: opacity 0.2s ease;
+            opacity: 0;
+        }
+        #profileAvatar:hover #usernameTooltip {
+            display: block;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-store"></i> INHACK</h1>
+            <p>Indian Hawkers - Smart Business Management</p>
+        </div>
+
+        <div style="position: absolute; top: 1.5rem; right: 2rem; z-index: 100;">
+            <div id="profileAvatar" style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-dark), var(--accent)); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                <i class="fas fa-user" style="color: #fff; font-size: 1.5rem;"></i>
+                <!-- Tooltip will be dynamically added here -->
+            </div>
+            <div id="profileDropdown" style="display: none; position: absolute; top: 56px; right: 0; background: #fff; border-radius: 0.7rem; box-shadow: 0 4px 16px rgba(0,0,0,0.13); min-width: 160px;">
+                <button onclick="openProfileModal()" style="width: 100%; background: none; border: none; padding: 1rem; text-align: left; font-size: 1rem; color: #333; cursor: pointer; border-radius: 0.7rem 0.7rem 0 0;">Edit Profile</button>
+            </div>
+        </div>
+
+        <div class="nav-tabs">
+            <div class="nav-tab active" onclick="showSection('home')"><i class="fas fa-home"></i> Home</div>
+            <div class="nav-tab" onclick="showSection('reminders')"><i class="fas fa-bell"></i> Reminders</div>
+            <div class="nav-tab" onclick="showSection('stock')"><i class="fas fa-boxes"></i> Stock Management</div>
+            <div class="nav-tab" onclick="showSection('scan')"><i class="fas fa-camera"></i> Scan Receipt</div>
+        </div>
+
+        <div id="home" class="content-section active">
+            <h2 class="section-title">Welcome to INHACK</h2>
+            <p style="text-align: center; margin-bottom: 30px; font-size: 1.1rem; color: #666;">Manage your food business efficiently with our smart tools</p>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-bell"></i></div>
+                    <div class="feature-title">Payment Reminders</div>
+                    <div class="feature-desc">Set reminders for supplier payments and get WhatsApp notifications at the right time</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-boxes"></i></div>
+                    <div class="feature-title">Stock Management</div>
+                    <div class="feature-desc">Track your purchases and sales to maintain optimal inventory levels</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-camera"></i></div>
+                    <div class="feature-title">Smart Receipt Scanner</div>
+                    <div class="feature-desc">Scan paper receipts and automatically add items to your inventory</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="reminders" class="content-section">
+            <h2 class="section-title">Payment Reminders</h2>
+            <div class="card">
+                <h3>Create New Reminder</h3>
+                <form id="reminderForm">
+                    <div class="form-row">
+                        <div class="form-group"><label class="form-label">Item Name</label><input type="text" class="form-input" id="itemName" required></div>
+                        <div class="form-group"><label class="form-label">Amount (&#8377;)</label><input type="number" class="form-input" id="amount" step="0.01" required></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label class="form-label">To Whom</label><input type="text" class="form-input" id="toWhom" required></div>
+                        <div class="form-group"><label class="form-label">Your Phone Number</label><input type="tel" class="form-input" id="phoneNumber" required></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label class="form-label">Supplier Phone Number</label><input type="tel" class="form-input" id="supplierPhone" required></div>
+                        <div class="form-group"><label class="form-label">Payment Method</label><select class="form-select" id="paymentMethod" required><option value="">Select Payment Method</option><option value="Cash">Cash</option><option value="online">Online</option></select></div>
+                    </div>
+                    <div class="form-group"><label class="form-label">Reminder Date & Time</label><input type="datetime-local" class="form-input" id="reminderDateTime" required></div>
+                    <button type="submit" class="btn"><i class="fas fa-bell"></i> Create Reminder</button>
+                </form>
+            </div>
+            <!-- <div class="loading" id="reminderLoading"><div class="spinner"></div><p>Creating reminder...</p></div> -->
+            <div id="reminderAlert"></div>
+            <div class="card">
+                <h3>Your Reminders</h3>
+                <div id="remindersList"><p style="text-align: center; color: #666;">Loading reminders...</p></div>
+            </div>
+        </div>
+
+        <div id="stock" class="content-section">
+            <h2 class="section-title">Stock Management</h2>
+            <div id="stockTypeChoice" style="display: flex; gap: 2rem; justify-content: center; margin-bottom: 2rem;">
+                <button class="btn btn-success" style="font-size: 1.2rem; display: flex; align-items: center; gap: 0.75rem;" onclick="chooseStockType('purchase')"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M16 3v4M8 3v4"/></svg>Add Purchase</button>
+                <button class="btn btn-danger" style="font-size: 1.2rem; display: flex; align-items: center; gap: 0.75rem;" onclick="chooseStockType('sale')"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 17v-4M16 17v-4"/></svg>Add Sale</button>
+            </div>
+            <div id="purchaseForm" class="card" style="display: none;">
+                <h3>Add Purchase</h3>
+                <form id="purchaseFormElement">
+                    <div class="form-row">
+                        <div class="form-group"><label class="form-label">Item Name</label><input type="text" class="form-input" id="purchaseItemName" required></div>
+                        <div class="form-group"><label class="form-label">Quantity</label><input type="number" class="form-input" id="purchaseQuantity" required></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label class="form-label">Price (&#8377;)</label><input type="number" class="form-input" id="purchasePrice" step="0.01" required></div>
+                        <div class="form-group"><label class="form-label">Payment Method</label><select class="form-select" id="purchasePaymentMethod" required><option value="">Select Payment Method</option><option value="Cash">Cash</option><option value="online">Online</option></select></div>
+                    </div>
+                    <button type="submit" class="btn"><i class="fas fa-plus"></i> Add Purchase</button>
+                    <button type="button" class="btn btn-secondary" style="margin-left: 1rem;" onclick="resetStockType()">Back</button>
+                </form>
+            </div>
+            <div id="saleForm" class="card" style="display: none;">
+                <h3>Add Sale</h3>
+                <form id="saleFormElement">
+                    <div class="form-row">
+                        <div class="form-group"><label class="form-label">Item Name</label><input type="text" class="form-input" id="saleItemName" required></div>
+                        <div class="form-group"><label class="form-label">Quantity</label><input type="number" class="form-input" id="saleQuantity" required></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label class="form-label">Total Price (&#8377;)</label><input type="number" class="form-input" id="saleTotalPrice" step="0.01" required></div>
+                        <div class="form-group"><label class="form-label">Payment Method</label><select class="form-select" id="salePaymentMethod" required><option value="">Select Payment Method</option><option value="Cash">Cash</option><option value="online">Online</option></select></div>
+                    </div>
+                    <button type="submit" class="btn btn-success"><i class="fas fa-plus"></i> Add Sale</button>
+                    <button type="button" class="btn btn-secondary" style="margin-left: 1rem;" onclick="resetStockType()">Back</button>
+                </form>
+            </div>
+            <div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.25); z-index:1000;">
+                <div style="background:white; border-radius:1rem; padding:2rem; min-width:300px; max-width:90vw; box-shadow:0 8px 32px rgba(0,0,0,0.15); position:relative;">
+                    <button onclick="closeEditModal()" style="position:absolute; top:1rem; right:1rem; background:none; border:none; font-size:1.5rem; cursor:pointer; color:#888;" title="Close">&times;</button>
+                    <h3 id="editModalTitle">Edit Stock</h3>
+                    <form id="editStockForm">
+                        <input type="hidden" id="editStockType">
+                        <input type="hidden" id="editStockId">
+                        <div class="form-group"><label class="form-label">Item Name</label><input type="text" class="form-input" id="editItemName" required></div>
+                        <div class="form-row">
+                            <div class="form-group"><label class="form-label">Quantity</label><input type="number" class="form-input" id="editQuantity" required></div>
+                            <div class="form-group"><label class="form-label" id="editPriceLabel">Price (&#8377;)</label><input type="number" class="form-input" id="editPrice" step="0.01" required></div>
+                        </div>
+                        <div class="form-group"><label class="form-label">Payment Method</label><select class="form-select" id="editPaymentMethod" required><option value="">Select Payment Method</option><option value="Cash">Cash</option><option value="online">Online</option></select></div>
+                        <button type="submit" class="btn btn-success">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+            <div class="loading" id="stockLoading"><div class="spinner"></div></div>
+            <div id="stockAlert"></div>
+            <div class="card">
+                <h3 id="stockListTitle">Recent Transactions</h3>
+                <div id="stockList"><p style="text-align: center; color: #666;">Choose a transaction type above to view transactions</p></div>
+            </div>
+        </div>
+
+        <div id="scan" class="content-section">
+            <h2 class="section-title">Scan Receipt</h2>
+            <div class="card">
+                <h3>Upload Receipt Image</h3>
+                <p style="margin-bottom: 20px; color: #666;">Take a photo of your receipt or upload an image. Our AI will automatically extract the items and add them to your inventory.</p>
+                <form id="scanForm">
+                    <div class="form-group">
+                        <label class="form-label">Transaction Type</label>
+                        <div style="display: flex; gap: 20px; margin-top: 10px;">
+                            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="intent" value="purchase" required><i class="fas fa-shopping-cart"></i> Purchase</label>
+                            <label style="display: flex; align-items: center; gap: 8px;"><input type="radio" name="intent" value="selling" required><i class="fas fa-cash-register"></i> Sale</label>
+                        </div>
+                    </div>
+                    <div class="file-upload" onclick="document.getElementById('receiptFile').click()">
+                        <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                        <p>Click to upload receipt image</p>
+                        <p style="font-size: 0.9rem; color: #666;">Supports JPG, PNG, PDF</p>
+                        <input type="file" id="receiptFile" accept="image/*" required style="display:none;">
+                    </div>
+                    <div id="filePreview" style="display: none; margin-top: 20px;"><img id="previewImage" style="max-width: 100%; max-height: 300px; border-radius: 10px;"></div>
+                    <button type="submit" class="btn" style="margin-top: 20px;"><i class="fas fa-magic"></i> Process Receipt</button>
+                </form>
+            </div>
+            <div class="loading" id="scanLoading" style="display:none;"><div class="spinner"></div><p id="scanLoadingText">Processing receipt with AI...</p></div>
+            <div id="scanAlert"></div>
+            <div id="scanResults" style="display: none;">
+                <div class="card">
+                    <h3>Extracted Items</h3>
+                    <form id="scanEditForm">
+                        <div id="extractedItems"></div>
+                        <button type="submit" class="btn btn-success" style="margin-top: 1rem;">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div id="profileModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.25); z-index:2000;">
+            <div style="background:white; border-radius:1rem; padding:2rem; min-width:300px; max-width:90vw; box-shadow:0 8px 32px rgba(0,0,0,0.15); position:relative;">
+                <button onclick="closeProfileModal()" style="position:absolute; top:1rem; right:1rem; background:none; border:none; font-size:1.5rem; cursor:pointer; color:#888;" title="Close">&times;</button>
+                <h3>Edit Profile</h3>
+                <form id="profileForm">
+                    <div class="form-group"><label class="form-label">Name</label><input type="text" class="form-input" id="profileName" required></div>
+                    <div class="form-group"><label class="form-label">Phone Number</label><input type="tel" class="form-input" id="profilePhone" required></div>
+                    <div class="form-group"><label class="form-label">Address</label><textarea class="form-input" id="profileAddress" rows="3" required></textarea></div>
+                    <button type="submit" class="btn btn-success">Save Changes</button>
+                </form>
+                <div id="profileAlert"></div>
+            </div>
+        </div>
+
+        <div id="authModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:4000;">
+            <div style="background:white; border-radius:1rem; padding:2rem; min-width:350px; max-width:90vw; box-shadow:0 8px 32px rgba(0,0,0,0.2); position:relative;">
+                <div id="loginStep">
+                    <h3 style="text-align:center; margin-bottom:1.5rem; color:#333;">Welcome to INHACK</h3>
+                    <p style="text-align:center; margin-bottom:2rem; color:#666;">Enter your phone number to continue</p>
+                    <form id="loginForm">
+                        <div class="form-group"><label for="loginPhone">Phone Number:</label><input type="tel" id="loginPhone" name="phone_number" required placeholder="Enter your phone number"></div>
+                        <button type="submit" class="btn" style="width:100%;">Continue</button>
+                    </form>
+                    <div id="loginAlert" style="margin-top:1rem;"></div>
+                </div>
+                <div id="registerStep" style="display:none;">
+                    <h3 style="text-align:center; margin-bottom:1.5rem; color:#333;">Complete Your Profile</h3>
+                    <p style="text-align:center; margin-bottom:2rem; color:#666;">Please provide your details to get started</p>
+                    <form id="authRegistrationForm">
+                        <div class="form-group"><label for="regName">Name:</label><input type="text" id="regName" name="name" required placeholder="Your full name"></div>
+                        <div class="form-group"><label for="regPhone">Phone Number:</label><input type="tel" id="regPhone" name="phone_number" required readonly></div>
+                        <div class="form-group"><label for="regAddress">Location:</label><input type="text" id="regAddress" name="address" required placeholder="Your business location"></div>
+                        <div class="form-group"><label for="regBusiness">Business Info:</label><input type="text" id="regBusiness" name="business_info" required placeholder="Type of food business"></div>
+                        <div style="display:flex; gap:1rem;">
+                            <button type="button" onclick="showLoginStep()" class="btn" style="flex:1; background:#ccc; color:#333;">Back</button>
+                            <button type="submit" class="btn" style="flex:2;">Complete Registration</button>
+                        </div>
+                    </form>
+                    <div id="registrationAlert" style="margin-top:1rem;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+        let currentStockTab = 'purchase';
+        let currentVendor = null;
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+            loadSectionData(sectionId);
+            if (sectionId === 'stock') resetStockType();
+        }
+
+        function showStockTab(tab) {
+            currentStockTab = tab;
+            document.querySelectorAll('#stock .nav-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            if (tab === 'purchase') {
+                document.getElementById('purchaseForm').style.display = 'block';
+                document.getElementById('saleForm').style.display = 'none';
+            } else {
+                document.getElementById('purchaseForm').style.display = 'none';
+                document.getElementById('saleForm').style.display = 'block';
+            }
+        }
+
+        function loadSectionData(sectionId) {
+            switch(sectionId) {
+                case 'reminders': loadReminders(); break;
+                case 'stock': loadStockData('all'); break;
+            }
+        }
+
+        async function loadReminders() {
+            try {
+                const response = await fetch(`${API_BASE}/reminders/`);
+                const reminders = await response.json();
+                displayReminders(reminders);
+            } catch (error) {
+                showAlert('reminderAlert', 'Error loading reminders', 'error');
+            }
+        }
+
+        function displayReminders(reminders) {
+            const container = document.getElementById('remindersList');
+            if (reminders.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666;">No reminders found</p>';
+                return;
+            }
+            container.innerHTML = reminders.map(reminder => `
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">${reminder.item_name}</div>
+                        <div class="card-actions">
+                            <button class="btn btn-sm btn-danger" onclick="deleteReminder(${reminder.id})"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <p><strong>Amount:</strong> &#8377;${reminder.Amount}</p>
+                    <p><strong>To:</strong> ${reminder.ToWhom}</p>
+                    <p><strong>Phone:</strong> ${reminder.phone_number}</p>
+                    <p><strong>Reminder:</strong> ${new Date(reminder.Date_Time).toLocaleString()}</p>
+                    <p><strong>Payment:</strong> ${reminder.payment_method}</p>
+                </div>
+            `).join('');
+        }
+
+        async function loadStockData(type = 'all') {
+            try {
+                let purchases = [], sales = [];
+                if (type === 'all' || type === 'purchase') purchases = await fetch(`${API_BASE}/purchases/`).then(r => r.json());
+                if (type === 'all' || type === 'sale') sales = await fetch(`${API_BASE}/sales/`).then(r => r.json());
+                displayStockData(purchases, sales, type);
+            } catch (error) {
+                showAlert('stockAlert', 'Error loading stock data', 'error');
+            }
+        }
+
+        function displayStockData(purchases, sales, type = 'all') {
+            const container = document.getElementById('stockList');
+            let allTransactions = [];
+            if (type === 'all') {
+                allTransactions = [
+                    ...purchases.map(p => ({...p, type: 'purchase'})),
+                    ...sales.map(s => ({...s, type: 'sale'}))
+                ].sort((a, b) => new Date(b.created_at || b.date) - new Date(a.created_at || a.date));
+            } else if (type === 'purchase') {
+                allTransactions = purchases.map(p => ({...p, type: 'purchase'})).sort((a, b) => new Date(b.created_at || b.date) - new Date(a.created_at || a.date));
+            } else if (type === 'sale') {
+                allTransactions = sales.map(s => ({...s, type: 'sale'})).sort((a, b) => new Date(b.created_at || b.date) - new Date(a.created_at || a.date));
+            }
+            if (allTransactions.length === 0) {
+                const message = type === 'all' ? 'No transactions found' : type === 'purchase' ? 'No purchase transactions found' : 'No sale transactions found';
+                container.innerHTML = `<p style="text-align: center; color: #666;">${message}</p>`;
+                return;
+            }
+            container.innerHTML = `
+                <div class="table-container">
+                    <table class="table stock-table">
+                        <thead>
+                            <tr><th>Type</th><th>Item</th><th>Quantity</th><th>Price</th><th>Payment</th><th>Date</th><th style="text-align:center;">Actions</th></tr>
+                        </thead>
+                        <tbody>
+                            ${allTransactions.map(t => `
+                                <tr>
+                                    <td data-label="Type"><span style="color: ${t.type === 'purchase' ? '#28a745' : '#dc3545'}; font-weight: bold; display: flex; align-items: center; gap: 0.3rem;"><i class="fas ${t.type === 'purchase' ? 'fa-arrow-down' : 'fa-arrow-up'}"></i> ${t.type === 'purchase' ? 'Purchase' : 'Sale'}</span></td>
+                                    <td data-label="Item">${t.item_name}</td>
+                                    <td data-label="Quantity">${t.quantity}</td>
+                                    <td data-label="Price"><span style="font-family:inherit;">&#8377;${t.price || t.total_price}</span></td>
+                                    <td data-label="Payment">${t.payment_method}</td>
+                                    <td data-label="Date">${new Date(t.created_at || t.date).toLocaleDateString()}</td>
+                                    <td data-label="Actions" style="text-align:center;">
+                                        <span style="display:inline-flex; gap:1.25rem; align-items:center;">
+                                            <button class="btn btn-sm btn-success" title="Edit" style="display:flex;align-items:center;gap:0.3rem;" onclick="openEditModal('${t.type}', ${t.id}, this)"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19.5 3 21l1.5-4L16.5 3.5z"/></svg></button>
+                                            <button class="btn btn-sm btn-danger" title="Delete" style="display:flex;align-items:center;gap:0.3rem;" onclick="deleteTransaction('${t.type}', ${t.id})"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></button>
+                                        </span>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        document.getElementById('reminderForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            showLoading('reminderLoading', true);
+            try {
+                const formData = {
+                    date_time: document.getElementById('reminderDateTime').value,
+                    item_name: document.getElementById('itemName').value,
+                    amount: parseFloat(document.getElementById('amount').value),
+                    to_whom: document.getElementById('toWhom').value,
+                    phone_number: document.getElementById('phoneNumber').value,
+                    supplier_phone_number: document.getElementById('supplierPhone').value,
+                    payment_method: document.getElementById('paymentMethod').value
+                };
+                const response = await fetch(`${API_BASE}/schedule-payment-reminder`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(formData)
+                });
+                if (response.ok) {
+                    showAlert('reminderAlert', 'Reminder created successfully!', 'success');
+                    document.getElementById('reminderForm').reset();
+                    loadReminders();
+                } else {
+                    throw new Error('Failed to create reminder');
+                }
+            } catch (error) {
+                showAlert('reminderAlert', 'Error creating reminder: ' + error.message, 'error');
+            } finally {
+                showLoading('reminderLoading', false);
+            }
+        });
+
+        document.getElementById('purchaseFormElement').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            showLoading('stockLoading', true);
+            try {
+                const formData = {
+                    item_name: document.getElementById('purchaseItemName').value,
+                    quantity: parseInt(document.getElementById('purchaseQuantity').value),
+                    price: parseFloat(document.getElementById('purchasePrice').value),
+                    payment_method: document.getElementById('purchasePaymentMethod').value
+                };
+                const response = await fetch(`${API_BASE}/purchases/`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(formData)
+                });
+                if (response.ok) {
+                    showAlert('stockAlert', 'Purchase added successfully!', 'success');
+                    document.getElementById('purchaseFormElement').reset();
+                    loadStockData();
+                } else {
+                    throw new Error('Failed to add purchase');
+                }
+            } catch (error) {
+                showAlert('stockAlert', 'Error adding purchase: ' + error.message, 'error');
+            } finally {
+                showLoading('stockLoading', false);
+            }
+        });
+
+        document.getElementById('saleFormElement').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            showLoading('stockLoading', true);
+            try {
+                const formData = {
+                    item_name: document.getElementById('saleItemName').value,
+                    quantity: parseInt(document.getElementById('saleQuantity').value),
+                    total_price: parseFloat(document.getElementById('saleTotalPrice').value),
+                    payment_method: document.getElementById('salePaymentMethod').value
+                };
+                const response = await fetch(`${API_BASE}/sales/`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(formData)
+                });
+                if (response.ok) {
+                    showAlert('stockAlert', 'Sale added successfully!', 'success');
+                    document.getElementById('saleFormElement').reset();
+                    loadStockData();
+                } else {
+                    throw new Error('Failed to add sale');
+                }
+            } catch (error) {
+                showAlert('stockAlert', 'Error adding sale: ' + error.message, 'error');
+            } finally {
+                showLoading('stockLoading', false);
+            }
+        });
+
+        document.getElementById('receiptFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('previewImage').src = e.target.result;
+                    document.getElementById('filePreview').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function showScanLoading(show) {
+            document.getElementById('scanLoading').style.display = show ? 'block' : 'none';
+        }
+
+        document.getElementById('scanForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            showScanLoading(true);
+            document.getElementById('scanAlert').innerHTML = '';
+            document.getElementById('scanResults').style.display = 'none';
+            try {
+                const formData = new FormData();
+                const file = document.getElementById('receiptFile').files[0];
+                const intent = document.querySelector('input[name="intent"]:checked').value;
+                if (!file) throw new Error('Please select a file');
+                formData.append('file', file);
+                formData.append('intent', intent);
+                const response = await fetch('/api/upload-receipt/', {
+                    method: 'POST',
+                    body: formData
+                });
+                if (response.ok) {
+                    const result = await response.json();
+                    showScanLoading(false);
+                    showAlert('scanAlert', 'Receipt processed successfully! You can edit the items below.', 'success');
+                    displayScanResults(result);
+                    document.getElementById('scanForm').reset();
+                    document.getElementById('filePreview').style.display = 'none';
+                } else {
+                    showScanLoading(false);
+                    throw new Error('Failed to process receipt');
+                }
+            } catch (error) {
+                showScanLoading(false);
+                showAlert('scanAlert', 'Error processing receipt: ' + error.message, 'error');
+            }
+        });
+
+        function displayScanResults(items) {
+            const container = document.getElementById('extractedItems');
+            if (!Array.isArray(items)) items = items.items || [];
+            if (items.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#666;">No items extracted.</p>';
+                document.getElementById('scanResults').style.display = 'block';
+                return;
+            }
+            container.innerHTML = `
+                <div class="table-container">
+                    <table class="table stock-table">
+                        <thead><tr><th>Item Name</th><th>Quantity</th><th>Price</th><th>Payment Method</th></tr></thead>
+                        <tbody>
+                            ${items.map((item, idx) => `
+                                <tr>
+                                    <td><input type="text" name="item_name_${idx}" value="${item.item_name}" class="form-input" required></td>
+                                    <td><input type="number" name="quantity_${idx}" value="${item.quantity}" class="form-input" required></td>
+                                    <td><input type="number" name="price_${idx}" value="${item.price}" class="form-input" required></td>
+                                    <td><select name="payment_method_${idx}" class="form-select" required><option value="Cash" ${item.payment_method === 'Cash' ? 'selected' : ''}>Cash</option><option value="online" ${item.payment_method === 'online' ? 'selected' : ''}>Online</option></select></td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+                <input type="hidden" name="item_count" value="${items.length}">
+            `;
+            document.getElementById('scanResults').style.display = 'block';
+        }
+
+        document.getElementById('scanEditForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const form = e.target;
+            const itemCount = parseInt(form.item_count.value);
+            const items = [];
+            for (let i = 0; i < itemCount; i++) {
+                items.push({
+                    item_name: form[`item_name_${i}`].value,
+                    quantity: parseInt(form[`quantity_${i}`].value),
+                    price: parseFloat(form[`price_${i}`].value),
+                    payment_method: form[`payment_method_${i}`].value
+                });
+            }
+            showScanLoading(true);
+            try {
+                let intent = document.querySelector('input[name="intent"]:checked')?.value;
+                let endpoint = intent === 'purchase' ? '/api/purchases/' : '/api/sales/';
+                let allOk = true;
+                for (const item of items) {
+                    const payload = endpoint.endsWith('purchases/') ? {
+                        item_name: item.item_name,
+                        quantity: item.quantity,
+                        price: item.price,
+                        payment_method: item.payment_method
+                    } : {
+                        item_name: item.item_name,
+                        quantity: item.quantity,
+                        total_price: item.price,
+                        payment_method: item.payment_method
+                    };
+                    const res = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!res.ok) allOk = false;
+                }
+                showScanLoading(false);
+                if (allOk) {
+                    showAlert('scanAlert', 'Items saved successfully!', 'success');
+                    document.getElementById('scanResults').style.display = 'none';
+                } else {
+                    throw new Error('Failed to save one or more items');
+                }
+            } catch (error) {
+                showScanLoading(false);
+                showAlert('scanAlert', 'Error saving items: ' + error.message, 'error');
+            }
+        });
+
+        function showLoading(elementId, show) {
+            document.getElementById(elementId).style.display = show ? 'block' : 'none';
+        }
+
+        function showAlert(elementId, message, type) {
+            const alertDiv = document.getElementById(elementId);
+            alertDiv.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            setTimeout(() => alertDiv.innerHTML = '', 5000);
+        }
+
+        async function deleteReminder(id) {
+            if (confirm('Are you sure you want to delete this reminder?')) {
+                try {
+                    const response = await fetch(`${API_BASE}/reminders/${id}`, { method: 'DELETE' });
+                    if (response.ok) {
+                        showAlert('reminderAlert', 'Reminder deleted successfully!', 'success');
+                        loadReminders();
+                    } else {
+                        throw new Error('Failed to delete reminder');
+                    }
+                } catch (error) {
+                    showAlert('reminderAlert', 'Error deleting reminder: ' + error.message, 'error');
+                }
+            }
+        }
+
+        async function deleteTransaction(type, id) {
+            if (confirm('Are you sure you want to delete this transaction?')) {
+                try {
+                    const endpoint = type === 'purchase' ? 'purchases' : 'sales';
+                    const response = await fetch(`${API_BASE}/${endpoint}/${id}`, { method: 'DELETE' });
+                    if (response.ok) {
+                        showAlert('stockAlert', 'Transaction deleted successfully!', 'success');
+                        loadStockData();
+                    } else {
+                        throw new Error('Failed to delete transaction');
+                    }
+                } catch (error) {
+                    showAlert('stockAlert', 'Error deleting transaction: ' + error.message, 'error');
+                }
+            }
+        }
+
+        function openEditModal(type, id, btn) {
+            let row = btn.closest('tr');
+            let itemName = row.children[1].textContent;
+            let quantity = row.children[2].textContent;
+            let price = row.children[3].textContent.replace('₹', '').replace('&#8377;', '');
+            let payment = row.children[4].textContent;
+            document.getElementById('editStockType').value = type;
+            document.getElementById('editStockId').value = id;
+            document.getElementById('editItemName').value = itemName;
+            document.getElementById('editQuantity').value = quantity;
+            document.getElementById('editPrice').value = price;
+            document.getElementById('editPaymentMethod').value = payment;
+            document.getElementById('editModalTitle').textContent = type === 'purchase' ? 'Edit Purchase' : 'Edit Sale';
+            document.getElementById('editPriceLabel').textContent = type === 'purchase' ? 'Price (₹)' : 'Total Price (₹)';
+            document.getElementById('editModal').style.display = 'flex';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        document.getElementById('editStockForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            showLoading('stockLoading', true);
+            try {
+                const type = document.getElementById('editStockType').value;
+                const id = document.getElementById('editStockId').value;
+                const data = {
+                    item_name: document.getElementById('editItemName').value,
+                    quantity: parseInt(document.getElementById('editQuantity').value),
+                    payment_method: document.getElementById('editPaymentMethod').value
+                };
+                if (type === 'purchase') data.price = parseFloat(document.getElementById('editPrice').value);
+                else data.total_price = parseFloat(document.getElementById('editPrice').value);
+                const endpoint = type === 'purchase' ? 'purchases' : 'sales';
+                const response = await fetch(`${API_BASE}/${endpoint}/${id}`, {
+                    method: 'PUT',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+                if (response.ok) {
+                    showAlert('stockAlert', 'Stock updated successfully!', 'success');
+                    closeEditModal();
+                    loadStockData();
+                } else {
+                    throw new Error('Failed to update stock');
+                }
+            } catch (error) {
+                showAlert('stockAlert', 'Error updating stock: ' + error.message, 'error');
+            } finally {
+                showLoading('stockLoading', false);
+            }
+        });
+
+        function chooseStockType(type) {
+            document.getElementById('stockTypeChoice').style.display = 'none';
+            if (type === 'purchase') {
+                document.getElementById('purchaseForm').style.display = 'block';
+                document.getElementById('saleForm').style.display = 'none';
+                document.getElementById('stockListTitle').textContent = 'Purchase Transactions';
+                loadStockData('purchase');
+            } else {
+                document.getElementById('purchaseForm').style.display = 'none';
+                document.getElementById('saleForm').style.display = 'block';
+                document.getElementById('stockListTitle').textContent = 'Sale Transactions';
+                loadStockData('sale');
+            }
+        }
+
+        function resetStockType() {
+            document.getElementById('stockTypeChoice').style.display = 'flex';
+            document.getElementById('purchaseForm').style.display = 'none';
+            document.getElementById('saleForm').style.display = 'none';
+            document.getElementById('stockListTitle').textContent = 'Recent Transactions';
+            loadStockData('all');
+        }
+
+        const profileAvatar = document.getElementById('profileAvatar');
+        const profileDropdown = document.getElementById('profileDropdown');
+        profileAvatar.addEventListener('click', function(e) {
+            e.stopPropagation();
+            profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
+        });
+        document.addEventListener('click', function() {
+            profileDropdown.style.display = 'none';
+        });
+
+        function openProfileModal() {
+            profileDropdown.style.display = 'none';
+            document.getElementById('profileName').value = currentVendor?.Name || '';
+            document.getElementById('profilePhone').value = currentVendor?.PhoneNumber || '';
+            document.getElementById('profileAddress').value = currentVendor?.Location || '';
+            document.getElementById('profileModal').style.display = 'flex';
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profileModal').style.display = 'none';
+        }
+
+        document.getElementById('profileForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const name = document.getElementById('profileName').value;
+            const phone_number = document.getElementById('profilePhone').value;
+            const address = document.getElementById('profileAddress').value;
+            try {
+                const response = await fetch('/api/vendor/', {
+                    method: currentVendor ? 'PATCH' : 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ Name: name, PhoneNumber: phone_number, Location: address })
+                });
+                if (response.ok) {
+                    currentVendor = await response.json();
+                    localStorage.setItem('currentVendor', JSON.stringify(currentVendor));
+                    document.getElementById('profileAlert').innerHTML = '<div class="alert alert-success">Profile updated!</div>';
+                    setTimeout(() => {
+                        closeProfileModal();
+                        document.getElementById('profileAlert').innerHTML = '';
+                        updateProfileDisplay();
+                    }, 1200);
+                } else {
+                    throw new Error('Failed to update profile');
+                }
+            } catch (err) {
+                document.getElementById('profileAlert').innerHTML = '<div class="alert alert-error">Failed to update profile.</div>';
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', function() {
+            loadSectionData('home');
+            checkAuthentication();
+        });
+
+        function checkAuthentication() {
+            const storedVendor = localStorage.getItem('currentVendor');
+            if (storedVendor) {
+                currentVendor = JSON.parse(storedVendor);
+                console.log('Vendor loaded from localStorage:', currentVendor);
+                hideAuthModal();
+                updateProfileDisplay();
+                return;
+            }
+            const urlParams = new URLSearchParams(window.location.search);
+            const phoneNumber = urlParams.get('phone_number');
+            if (phoneNumber) {
+                autoCheckPhoneNumber(phoneNumber);
+            } else {
+                showAuthModal();
+            }
+        }
+
+        async function autoCheckPhoneNumber(phoneNumber) {
+            console.log('Auto-checking phone number:', phoneNumber);
+            try {
+                const response = await fetch('/api/vendor/authenticate', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: `phone_number=${encodeURIComponent(phoneNumber)}`
+                });
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('Authentication response:', result);
+                    if (result && 'exists' in result) {
+                        if (result.exists) {
+                            currentVendor = result.vendor;
+                            localStorage.setItem('currentVendor', JSON.stringify(currentVendor));
+                            hideAuthModal();
+                            updateProfileDisplay();
+                        } else {
+                            showRegisterStep(phoneNumber);
+                        }
+                    } else {
+                        console.error('Invalid response format');
+                        showAuthModal();
+                    }
+                } else {
+                    console.error('Server error:', response.status);
+                    showAuthModal();
+                }
+            } catch (error) {
+                console.error('Network error during auto-check:', error);
+                showAuthModal();
+            }
+        }
+
+        function showAuthModal() {
+            console.log('Showing auth modal');
+            document.getElementById('authModal').style.display = 'flex';
+        }
+
+        function hideAuthModal() {
+            console.log('Hiding auth modal');
+            document.getElementById('authModal').style.display = 'none';
+        }
+
+        function showLoginStep() {
+            console.log('Switching to login step');
+            document.getElementById('loginStep').style.display = 'block';
+            document.getElementById('registerStep').style.display = 'none';
+            document.getElementById('loginAlert').innerHTML = '';
+        }
+
+        function showRegisterStep(phoneNumber) {
+            console.log('Switching to register step with phone:', phoneNumber);
+            document.getElementById('loginStep').style.display = 'none';
+            document.getElementById('registerStep').style.display = 'block';
+            document.getElementById('regPhone').value = phoneNumber;
+            document.getElementById('registrationAlert').innerHTML = '';
+        }
+
+        function updateProfileDisplay() {
+            if (currentVendor) {
+                console.log('Updating profile display for:', currentVendor.Name);
+                let tooltip = document.getElementById('usernameTooltip');
+                if (!tooltip) {
+                    tooltip = document.createElement('div');
+                    tooltip.id = 'usernameTooltip';
+                    document.getElementById('profileAvatar').appendChild(tooltip);
+                }
+                tooltip.textContent = currentVendor.Name;
+            } else {
+                const tooltip = document.getElementById('usernameTooltip');
+                if (tooltip) tooltip.remove();
+            }
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const phoneNumber = document.getElementById('loginPhone').value;
+            console.log('Login attempt with phone:', phoneNumber);
+            try {
+                const response = await fetch('/api/vendor/authenticate', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: `phone_number=${encodeURIComponent(phoneNumber)}`
+                });
+                if (response.ok) {
+                    try {
+                        const result = await response.json();
+                        console.log('Login response:', result);
+                        if (result && 'exists' in result) {
+                            if (result.exists) {
+                                currentVendor = result.vendor;
+                                localStorage.setItem('currentVendor', JSON.stringify(currentVendor));
+                                document.getElementById('loginAlert').innerHTML = '<div style="color: green; text-align: center;">Welcome back, ' + currentVendor.Name + '!</div>';
+                                setTimeout(() => {
+                                    hideAuthModal();
+                                    updateProfileDisplay();
+                                }, 1500);
+                            } else {
+                                showRegisterStep(phoneNumber);
+                            }
+                        } else {
+                            console.error('Invalid response format');
+                            document.getElementById('loginAlert').innerHTML = '<div style="color: red; text-align: center;">Invalid server response.</div>';
+                        }
+                    } catch (jsonError) {
+                        console.error('JSON parse error:', jsonError);
+                        document.getElementById('loginAlert').innerHTML = '<div style="color: red; text-align: center;">Invalid server response.</div>';
+                    }
+                } else {
+                    console.error('Authentication failed:', response.status);
+                    document.getElementById('loginAlert').innerHTML = '<div style="color: red; text-align: center;">Error checking phone number. Please try again.</div>';
+                }
+            } catch (error) {
+                console.error('Network error during login:', error);
+                document.getElementById('loginAlert').innerHTML = '<div style="color: red; text-align: center;">Network error. Please try again.</div>';
+            }
+        });
+
+        document.getElementById('authRegistrationForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const name = document.getElementById('regName').value;
+            const phone_number = document.getElementById('regPhone').value;
+            const address = document.getElementById('regAddress').value;
+            const business_info = document.getElementById('regBusiness').value;
+            console.log('Registration attempt:', { name, phone_number });
+            try {
+                const response = await fetch('/api/vendor/', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        Name: name,
+                        PhoneNumber: phone_number,
+                        Location: address,
+                        BusinessInfo: business_info
+                    })
+                });
+                if (response.ok) {
+                    const vendor = await response.json();
+                    currentVendor = vendor;
+                    localStorage.setItem('currentVendor', JSON.stringify(vendor));
+                    document.getElementById('registrationAlert').innerHTML = '<div style="color: green; text-align: center;">Registration successful! Welcome, ' + vendor.Name + '!</div>';
+                    setTimeout(() => {
+                        hideAuthModal();
+                        updateProfileDisplay();
+                    }, 1500);
+                } else {
+                    const error = await response.json();
+                    console.error('Registration failed:', error);
+                    document.getElementById('registrationAlert').innerHTML = '<div style="color: red; text-align: center;">Registration failed: ' + (error.detail || 'Unknown error') + '</div>';
+                }
+            } catch (error) {
+                console.error('Network error during registration:', error);
+                document.getElementById('registrationAlert').innerHTML = '<div style="color: red; text-align: center;">Network error. Please try again.</div>';
+            }
+        });
+    </script>
+</body>
+</html>
