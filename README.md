@@ -104,7 +104,6 @@ DATABASE_URL=sqlite:///./INHACK.db
 TWILIO_SID=your_twilio_sid
 TWILIO_AUTH_TOKEN=your_twilio_auth_token
 GROQ_API_KEY=your_groq_api_key
-GOOGLE_APPLICATION_CREDENTIALS=path_to_your_google_credentials.json
 
 # Celery
 CELERY_BROKER_URL=redis://localhost:6379/0
@@ -112,7 +111,6 @@ CELERY_RESULT_BACKEND=redis://localhost:6379/0
 
 # Application Settings
 DEBUG=True
-ALLOWED_ORIGINS=http://localhost:3000,http://localhost:8000
 TIMEZONE=Asia/Kolkata
 ```
 
@@ -162,7 +160,7 @@ The frontend is a single-page application built with vanilla JavaScript, featuri
    - Dropdown with username display
    - Profile editing modal
 
-**pictures**:
+## pictures:
 
 ---
 

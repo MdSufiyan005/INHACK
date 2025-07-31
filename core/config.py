@@ -15,7 +15,6 @@ class Settings(BaseSettings):
     CELERY_RESULT_BACKEND: str = Field(default="", validation_alias="CELERY_RESULT_BACKEND")
     PHONE_NUMBER: str = Field(default="",validation_alias="PHONE_NUMBER")
     TIMEZONE:str = Field(default="UTC", validation_alias="TIMEZONE")
-    GOOGLE_APPLICATION_CREDENTIALS: str = Field(default='', validation_alias="GOOGLE_APPLICATION_CREDENTIALS")
     GROQ_API_KEY:str = Field(default="", validation_alias="GROQ_API_KEY")
     
     @field_validator("ALLOWED_ORIGINS")
