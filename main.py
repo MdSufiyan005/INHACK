@@ -12,6 +12,7 @@ from models.vendor import Vendor
 import json
 from typing import Optional
 import uuid
+from fastapi.staticfiles import StaticFiles
 from db.database import get_db
 from core.vision_ai import extract_text
 create_tables()
@@ -21,6 +22,7 @@ app = FastAPI(
     version="1.0.0",
     docs_url="/docs"
 )
+app.mount("/static", StaticFiles(directory="static"), name="static")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.ALLOWED_ORIGINS,
