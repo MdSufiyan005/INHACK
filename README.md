@@ -10,6 +10,7 @@ INHACK is a comprehensive business management application designed specifically 
 - [Configuration](#configuration)
 - [Running the Application](#running-the-application)
 - [Frontend Components](#frontend-components)
+- [Pictures](#pictures)
 
 ## Features
 
@@ -160,3 +161,48 @@ The frontend is a single-page application built with vanilla JavaScript, featuri
 7. **Profile Management**:
    - Dropdown with username display
    - Profile editing modal
+
+**pictures**:
+
+---
+
+## 📸 Screenshots
+
+### 🔐 Login Page
+
+![Login Page](pictures/login.jpg)
+
+---
+
+### 🏠 Home Page
+
+![Home Page](pictures/home.jpg)
+
+---
+
+### 📦 Stock Management
+
+![Stock Management Page](pictures/stock_management.jpg)
+
+---
+
+### 💰 Payment Reminders
+
+**Dashboard View:**
+![Payment Reminders Page](pictures/payment_reminder.jpg)
+
+**WhatsApp Reminder Interface:**
+![WhatsApp Reminder](pictures/whatsapp_reminder.jpg)
+
+---
+
+### 🧾 Scan Receipt
+
+![Scan Receipt Page](pictures/scan_reciept.jpg)
+
+---
+
+### 🎉 Event Finder
+
+![Event Page](pictures/upcoming_events.jpg)
+
